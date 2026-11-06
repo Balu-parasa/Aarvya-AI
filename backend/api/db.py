@@ -186,3 +186,4 @@ db_manager = MongoDatabaseManager()
 
 def get_db_collection(name: str):
     return db_manager.get_collection(name)
+

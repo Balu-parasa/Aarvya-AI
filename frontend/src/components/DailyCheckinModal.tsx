@@ -244,3 +244,4 @@ export const DailyCheckinModal: React.FC<DailyCheckinModalProps> = ({
     </div>
   );
 };
+

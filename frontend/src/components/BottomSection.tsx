@@ -310,3 +310,4 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
     </div>
   );
 };
+

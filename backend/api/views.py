@@ -410,3 +410,147 @@ def api_admin_metrics(request):
         },
         "recent_audits": list(audit_col.find({}).sort("timestamp", -1).limit(15))
     }))
+
+# ----------------- APPOINTMENTS & CLINICAL NOTES -----------------
+
+@api_view(["POST"])
+def api_schedule_appointment(request):
+    data = request.data or {}
+    user = get_authenticated_user(request)
+    user_id = user["_id"] if user else "user_sara_001"
+    
+    counsellor_id = data.get("counsellor_id", "counsellor_jams_001")
+    scheduled_for = data.get("scheduled_for", (datetime.utcnow() + timedelta(days=2)).isoformat())
+    session_type = data.get("type", "Follow-up Wellness Consultation")
+    
+    appts_col = get_db_collection("appointments")
+    doc = {
+        "user_id": user_id,
+        "counsellor_id": counsellor_id,
+        "counsellor_name": data.get("counsellor_name", "Dr. Jams Alther"),
+        "counsellor_title": "Lead Clinical Psychologist",
+        "counsellor_avatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80",
+        "scheduled_for": scheduled_for,
+        "type": session_type,
+        "status": "confirmed",
+        "remaining_hours": 48,
+        "remaining_mins": 0,
+        "created_at": datetime.utcnow().isoformat()
+    }
+    res = appts_col.insert_one(doc)
+    
+    # Audit log
+    audit_col = get_db_collection("audit_logs")
+    audit_col.insert_one({
+        "action": "APPOINTMENT_SCHEDULED",
+        "actor": user_id,
+        "details": f"Scheduled {session_type} for {scheduled_for}",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+    
+    return Response(sanitize_doc({
+        "message": "Support session scheduled successfully.",
+        "appointment_id": str(res.inserted_id),
+        "appointment": doc
+    }), status=status.HTTP_201_CREATED)
+
+@api_view(["GET", "POST"])
+def api_counsellor_notes(request, user_id=None):
+    notes_col = get_db_collection("clinical_notes")
+    if request.method == "GET":
+        target_id = user_id or "user_sara_001"
+        notes = list(notes_col.find({"user_id": target_id}).sort("created_at", -1))
+        return Response(sanitize_doc(notes))
+        
+    data = request.data or {}
+    note_doc = {
+        "user_id": data.get("user_id", "user_sara_001"),
+        "counsellor_name": "Dr. Jams Alther",
+        "observation": data.get("observation", ""),
+        "interventions": data.get("interventions", ""),
+        "next_steps": data.get("next_steps", ""),
+        "created_at": datetime.utcnow().isoformat()
+    }
+    res = notes_col.insert_one(note_doc)
+    return Response(sanitize_doc({
+        "message": "Clinical session note recorded.",
+        "note_id": str(res.inserted_id)
+    }), status=status.HTTP_201_CREATED)
+
+# ----------------- NOTIFICATIONS & CRISIS PATHWAYS -----------------
+
+@api_view(["GET"])
+def api_notifications(request):
+    notifs_col = get_db_collection("notifications")
+    notifs = list(notifs_col.find({}).sort("created_at", -1).limit(10))
+    if not notifs:
+        # Pre-populate sample notifications if empty
+        sample_notifs = [
+            {
+                "title": "Upcoming Session Reminder",
+                "message": "Your consultation with Dr. Jams Alther is in 6 hours and 52 minutes.",
+                "type": "reminder",
+                "is_read": False,
+                "created_at": (datetime.utcnow() - timedelta(minutes=45)).isoformat()
+            },
+            {
+                "title": "Weekly Wellness Milestone",
+                "message": "You maintained a 100% check-in consistency this week! Peak well-being reached 92%.",
+                "type": "achievement",
+                "is_read": False,
+                "created_at": (datetime.utcnow() - timedelta(hours=4)).isoformat()
+            },
+            {
+                "title": "New Care Report Available",
+                "message": "Dr. Jasmin uploaded your Cognitive Therapy summary report.",
+                "type": "report",
+                "is_read": True,
+                "created_at": (datetime.utcnow() - timedelta(days=1)).isoformat()
+            }
+        ]
+        for s in sample_notifs:
+            notifs_col.insert_one(s)
+        notifs = list(notifs_col.find({}).sort("created_at", -1).limit(10))
+
+    return Response(sanitize_doc({
+        "unread_count": len([n for n in notifs if not n.get("is_read")]),
+        "notifications": notifs
+    }))
+
+@api_view(["POST"])
+def api_mark_notifications_read(request):
+    notifs_col = get_db_collection("notifications")
+    notifs_col.update_one({"is_read": False}, {"$set": {"is_read": True}})
+    return Response({"message": "Notifications marked as read."})
+
+@api_view(["GET"])
+def api_crisis_resources(request):
+    """Verified 24/7 crisis hotlines and trauma care pathways."""
+    resources = [
+        {
+            "name": "Tele-MANAS (Govt. of India)",
+            "number": "14416 / 1800-891-4416",
+            "availability": "24/7 • Free • Multi-lingual",
+            "scope": "Comprehensive mental health & distress counseling across 20+ languages."
+        },
+        {
+            "name": "KIRAN Mental Health Helpline",
+            "number": "1800-599-0019",
+            "availability": "24/7 • Toll-Free",
+            "scope": "Trauma recovery, distress relief & professional psychological triage."
+        },
+        {
+            "name": "Vandrevala Foundation Helpline",
+            "number": "+91 9999 666 555",
+            "availability": "24/7 • Free • WhatsApp & Call",
+            "scope": "Experienced mental health counselors for acute emotional crisis."
+        },
+        {
+            "name": "International Crisis Text Line",
+            "number": "Text HOME to 741741",
+            "availability": "24/7 • Free • SMS",
+            "scope": "Confidential text support for crisis intervention."
+        }
+    ]
+    return Response(resources)
+

@@ -96,3 +96,4 @@ export interface AlertItem {
   status: 'pending_review' | 'reviewed';
   created_at: string;
 }
+

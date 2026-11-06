@@ -130,3 +130,4 @@ class DistressTrendAnalyzer:
             ),
             "generated_at": datetime.utcnow().isoformat()
         }
+

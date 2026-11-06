@@ -149,3 +149,4 @@ export const HealthImprovementChart: React.FC<HealthImprovementChartProps> = ({
     </div>
   );
 };
+

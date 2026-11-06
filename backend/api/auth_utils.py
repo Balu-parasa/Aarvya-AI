@@ -58,3 +58,4 @@ def decode_jwt(token: str) -> dict | None:
         return payload
     except Exception:
         return None
+

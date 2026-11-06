@@ -193,3 +193,4 @@ def seed_initial_data():
         "details": "Platform security policies, PyMongo collection schemas, and privacy guards activated.",
         "timestamp": datetime.utcnow().isoformat()
     })
+

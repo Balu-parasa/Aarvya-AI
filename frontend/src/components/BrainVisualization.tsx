@@ -127,3 +127,4 @@ export const BrainVisualization: React.FC<BrainVisualizationProps> = ({
     </div>
   );
 };
+
