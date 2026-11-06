@@ -17,7 +17,7 @@ def seed_initial_data():
     # 1. Demo User: Sara
     user_sara = {
         "_id": "user_sara_001",
-        "email": "user@mindguard.ai",
+        "email": "user@aarvya.ai",
         "name": "Sara Jenkins",
         "display_name": "Sara",
         "role": "user",
@@ -34,7 +34,7 @@ def seed_initial_data():
     counsellors = [
         {
             "_id": "counsellor_jams_001",
-            "email": "jams@mindguard.ai",
+            "email": "jams@aarvya.ai",
             "name": "Dr. Jams Alther",
             "role": "counsellor",
             "title": "Lead Clinical Psychologist",
@@ -45,7 +45,7 @@ def seed_initial_data():
         },
         {
             "_id": "counsellor_jasmin_002",
-            "email": "jasmin@mindguard.ai",
+            "email": "jasmin@aarvya.ai",
             "name": "Dr. Jasmin",
             "role": "counsellor",
             "title": "CBT Specialist",
@@ -54,7 +54,7 @@ def seed_initial_data():
         },
         {
             "_id": "counsellor_jonshon_003",
-            "email": "jonshon@mindguard.ai",
+            "email": "jonshon@aarvya.ai",
             "name": "Dr. Jonshon",
             "role": "counsellor",
             "title": "Stress & Burnout Consultant",
@@ -63,7 +63,7 @@ def seed_initial_data():
         },
         {
             "_id": "counsellor_samira_004",
-            "email": "samira@mindguard.ai",
+            "email": "samira@aarvya.ai",
             "name": "Dr. Samira",
             "role": "counsellor",
             "title": "Sleep & Circadian Rhythm Therapist",
@@ -72,7 +72,7 @@ def seed_initial_data():
         },
         {
             "_id": "counsellor_sato_005",
-            "email": "sato@mindguard.ai",
+            "email": "sato@aarvya.ai",
             "name": "Dr. K Sato",
             "role": "counsellor",
             "title": "Emotional Resilience Specialist",
@@ -86,7 +86,7 @@ def seed_initial_data():
     # 3. Demo Admin
     admin_user = {
         "_id": "admin_001",
-        "email": "admin@mindguard.ai",
+        "email": "admin@aarvya.ai",
         "name": "Administrator",
         "display_name": "Admin",
         "role": "admin",

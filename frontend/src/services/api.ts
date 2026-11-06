@@ -13,16 +13,16 @@ const client = axios.create({
 // Set token in localStorage
 export const setAuthToken = (token: string | null) => {
   if (token) {
-    localStorage.setItem('mindguard_token', token);
+    localStorage.setItem('aarvya_token', token);
     client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
-    localStorage.removeItem('mindguard_token');
+    localStorage.removeItem('aarvya_token');
     delete client.defaults.headers.common['Authorization'];
   }
 };
 
 // Initial load
-const existingToken = localStorage.getItem('mindguard_token');
+const existingToken = localStorage.getItem('aarvya_token');
 if (existingToken) {
   client.defaults.headers.common['Authorization'] = `Bearer ${existingToken}`;
 }

@@ -1,4 +1,6 @@
-# MindGuard AI (AARVYA AI)
+# Aarvya AI
+
+> **"Every Emotion Matters. Every Voice Deserves Support."**
 
 **AI-Powered Dynamic Mental Health Monitoring and Distress Prediction System for Victims of Atrocities.**
 
@@ -32,6 +34,7 @@ Aarvya ai/
     │   │   ├── CounsellorPortal.tsx   # Licensed psychologist triage & alert review console
     │   │   ├── ProgressPage.tsx       # Historical check-in analytics
     │   │   ├── AdminPortal.tsx        # Tamper-evident audit trail & system metrics
+    │   │   ├── NotificationsDrawer.tsx # Activity notifications & session reminders
     │   │   └── LandingPage.tsx        # Mission overview & ethical disclaimer
     │   ├── services/api.ts            # Axios API client with local resilience
     │   └── types/index.ts
@@ -56,20 +59,19 @@ You can switch roles directly from the avatar dropdown in the top-right corner o
 
 1. **Individual / Victim View**:
    - Name: Sara Jenkins
-   - Email: `user@mindguard.ai`
+   - Email: `user@aarvya.ai`
    - Access to daily check-ins, personal telemetry, reports, upcoming support session.
 
 2. **Counsellor Clinical View**:
    - Name: Dr. Jams Alther (Lead Clinical Psychologist)
-   - Email: `jams@mindguard.ai`
+   - Email: `jams@aarvya.ai`
    - Access to triage queue, explainable distress variance factors, and patient records.
 
 3. **System Administrator View**:
-   - Email: `admin@mindguard.ai`
+   - Email: `admin@aarvya.ai`
    - Access to system metrics and tamper-evident audit logs.
 
 ---
 
 ## Ethical Non-Clinical Disclaimer
-MindGuard AI is built for supportive monitoring and human-centred triage, not autonomous psychiatric diagnosis or clinical decision-making.
-
+Aarvya AI is built for supportive monitoring and human-centred triage, not autonomous psychiatric diagnosis or clinical decision-making.

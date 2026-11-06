@@ -4,10 +4,10 @@ import hmac
 import json
 import time
 
-SECRET_KEY = "mindguard-aarvya-super-secret-production-jwt-key"
+SECRET_KEY = "aarvya-ai-super-secret-production-jwt-key"
 
 def hash_password(password: str) -> str:
-    salt = "mindguard_salt"
+    salt = "aarvya_salt"
     key = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000)
     return key.hex()
 

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'corsheaders',
-    # MindGuard AI App
+    # Aarvya AI App
     'api',
 ]
 

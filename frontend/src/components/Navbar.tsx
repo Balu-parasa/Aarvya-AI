@@ -30,14 +30,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         className="flex items-center space-x-3 cursor-pointer select-none group"
       >
         <div className="w-10 h-10 rounded-full bg-[#242033] flex items-center justify-center text-white font-heading font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
-          M
+          A
         </div>
         <div className="flex flex-col">
           <span className="font-heading font-bold text-2xl tracking-tight text-[#242033]">
-            MindGuard
+            Aarvya AI
           </span>
           <span className="text-[10px] uppercase font-bold tracking-widest text-[#858098] -mt-1">
-            AARVYA AI
+            EVERY EMOTION MATTERS
           </span>
         </div>
       </div>

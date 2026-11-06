@@ -8,8 +8,8 @@ from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 
 logger = logging.getLogger(__name__)
 
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/mindguard_db")
-DB_NAME = os.getenv("MONGODB_DB_NAME", "mindguard_db")
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/aarvya_db")
+DB_NAME = os.getenv("MONGODB_DB_NAME", "aarvya_db")
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):

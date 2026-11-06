@@ -28,7 +28,7 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
       // Simulate file download
       const element = document.createElement('a');
       const file = new Blob([
-        `MINDGUARD AI - CLINICAL OBSERVATION REPORT\n` +
+        `AARVYA AI - CLINICAL OBSERVATION REPORT\n` +
         `==========================================\n` +
         `Report: ${report.title}\n` +
         `Date: ${report.date}\n` +
@@ -287,7 +287,7 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
             <div className="flex space-x-3">
               <button
                 onClick={() => {
-                  alert('Session meeting link generated: https://meet.mindguard.ai/room-sara-jams');
+                  alert('Session meeting link generated: https://meet.aarvya.ai/room-sara-jams');
                   setSessionModalOpen(false);
                 }}
                 className="flex-1 py-2.5 rounded-full bg-[#7546F5] text-white text-xs font-semibold hover:bg-[#6232e0] transition-colors shadow-md shadow-[#7546F5]/25"

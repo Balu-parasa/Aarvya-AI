@@ -12,14 +12,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
       <div className="flex items-center justify-between py-4 border-b border-white/60">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-[#242033] flex items-center justify-center text-white font-heading font-bold text-lg">
-            M
+            A
           </div>
           <div>
             <span className="font-heading font-bold text-2xl tracking-tight text-[#242033]">
-              MindGuard AI
+              Aarvya AI
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-[#858098] block -mt-1">
-              AARVYA AI • HEALTHTECH PLATFORM
+              HEALTHTECH MENTAL WELLNESS PLATFORM
             </span>
           </div>
         </div>
@@ -42,8 +42,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
           </div>
 
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-[54px] font-bold text-[#242033] leading-tight tracking-tight">
-            Your Well-being Matters.<br />
-            <span className="text-[#7546F5]">Your Journey Deserves Support.</span>
+            Every Emotion Matters.<br />
+            <span className="text-[#7546F5]">Every Voice Deserves Support.</span>
           </h1>
 
           <p className="text-sm sm:text-base text-[#858098] leading-relaxed">
@@ -123,9 +123,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
       {/* Ethical Disclaimer Footer */}
       <footer className="mt-6 pt-6 border-t border-white/60 text-center text-xs text-[#858098] space-y-1">
         <p>
-          <strong>Notice:</strong> MindGuard AI is designed for supportive monitoring and early distress detection, not medical diagnosis or autonomous psychiatric decisions.
+          <strong>Notice:</strong> Aarvya AI is designed for supportive monitoring and early distress detection, not medical diagnosis or autonomous psychiatric decisions.
         </p>
-        <p>© 2026 MindGuard AI • AARVYA AI HealthTech Platform. All Rights Reserved.</p>
+        <p>© 2026 Aarvya AI • HealthTech Platform. All Rights Reserved.</p>
       </footer>
     </div>
   );

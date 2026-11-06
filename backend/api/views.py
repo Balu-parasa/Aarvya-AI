@@ -48,7 +48,9 @@ def get_authenticated_user(request):
 def api_health(request):
     return Response({
         "status": "healthy",
-        "service": "MindGuard AI / Aarvya AI API",
+        "service": "Aarvya AI API",
+        "title": "Aarvya AI",
+        "tagline": "Every Emotion Matters. Every Voice Deserves Support.",
         "timestamp": datetime.utcnow().isoformat()
     })
 
@@ -147,7 +149,7 @@ def api_me(request):
     if not user:
         # Fallback to demo user Sara for seamless live demo preview
         users_col = get_db_collection("users")
-        user = users_col.find_one({"email": "user@mindguard.ai"})
+        user = users_col.find_one({"email": "user@aarvya.ai"}) or users_col.find_one({}) or {}
         
     return Response({
         "id": user["_id"],
@@ -170,7 +172,7 @@ def api_dashboard_overview(request):
     user = get_authenticated_user(request)
     if not user:
         users_col = get_db_collection("users")
-        user = users_col.find_one({"email": "user@mindguard.ai"}) or {}
+        user = users_col.find_one({"email": "user@aarvya.ai"}) or users_col.find_one({}) or {}
 
     user_id = user.get("_id", "user_sara_001")
     
