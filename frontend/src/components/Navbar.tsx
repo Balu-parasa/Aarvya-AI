@@ -5,6 +5,8 @@ interface NavbarProps {
   activeTab: 'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin';
   setActiveTab: (tab: 'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin') => void;
   onOpenCheckin: () => void;
+  onOpenNotifications?: () => void;
+  unreadNotificationsCount?: number;
   userRole: 'user' | 'counsellor' | 'admin';
   setUserRole: (role: 'user' | 'counsellor' | 'admin') => void;
   userName: string;
@@ -14,6 +16,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   onOpenCheckin,
+  onOpenNotifications,
+  unreadNotificationsCount = 0,
   userRole,
   setUserRole,
   userName,
@@ -101,11 +105,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Notifications Button */}
         <button 
-          title="Notifications"
+          onClick={onOpenNotifications}
+          title="Activity Notifications"
           className="relative w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-white/80 flex items-center justify-center text-[#242033] hover:text-[#7546F5] shadow-sm transition-all"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#7546F5] ring-2 ring-white"></span>
+          {unreadNotificationsCount > 0 && (
+            <span className="absolute top-2 right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#7546F5] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
+              {unreadNotificationsCount}
+            </span>
+          )}
         </button>
 
         {/* User Profile & Role Selector */}

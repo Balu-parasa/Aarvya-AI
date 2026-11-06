@@ -59,11 +59,11 @@ export const HealthImprovementChart: React.FC<HealthImprovementChartProps> = ({
   };
 
   return (
-    <div className="w-full lg:w-[45%] bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-7 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
+    <div className="w-full lg:w-[44%] xl:w-[42%] bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-7 xl:p-8 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
       {/* Header with Timeframe Dropdown */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="font-heading font-medium text-xl text-[#242033] tracking-tight">
+          <h3 className="font-heading font-medium text-xl sm:text-2xl text-[#242033] tracking-tight">
             {title}
           </h3>
           <p className="text-sm text-[#858098]">
@@ -103,7 +103,7 @@ export const HealthImprovementChart: React.FC<HealthImprovementChartProps> = ({
       </div>
 
       {/* Chart Canvas */}
-      <div className="w-full h-[230px] sm:h-[260px] pt-4">
+      <div className="w-full h-[250px] sm:h-[280px] lg:h-[300px] pt-4">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 35, right: 12, left: 12, bottom: 0 }}>
             <defs>

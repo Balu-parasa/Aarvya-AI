@@ -58,7 +58,7 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
   };
 
   return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 mt-6">
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 mt-6 lg:mt-8">
       {/* Toast Notification */}
       {downloadToast && (
         <div className="fixed bottom-6 right-6 z-50 bg-[#242033] text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-2 border border-[#7546F5]/40 text-xs animate-bounce">
@@ -68,9 +68,9 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
       )}
 
       {/* CARD 1: Reports (5 cols) */}
-      <div className="lg:col-span-5 bg-white/70 backdrop-blur-md rounded-3xl p-6 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
+      <div className="lg:col-span-5 bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-7 xl:p-8 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-heading font-medium text-xl text-[#242033] tracking-tight">
+          <h3 className="font-heading font-medium text-xl sm:text-2xl text-[#242033] tracking-tight">
             Reports
           </h3>
 
@@ -147,13 +147,13 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
       </div>
 
       {/* CARD 2: Upcoming Session (3 cols) */}
-      <div className="lg:col-span-3 bg-white/70 backdrop-blur-md rounded-3xl p-6 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
+      <div className="lg:col-span-3 bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-7 xl:p-8 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="font-heading font-medium text-xl text-[#242033] tracking-tight leading-tight">
+            <h3 className="font-heading font-medium text-xl sm:text-2xl text-[#242033] tracking-tight leading-tight">
               Upcoming
             </h3>
-            <h4 className="font-heading font-medium text-xl text-[#242033] tracking-tight">
+            <h4 className="font-heading font-medium text-xl sm:text-2xl text-[#242033] tracking-tight">
               Session
             </h4>
           </div>
@@ -169,7 +169,7 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
 
         <div className="my-3">
           <span className="text-xs text-[#858098] block">Remaining</span>
-          <div className="font-heading font-semibold text-3xl sm:text-[34px] text-[#242033] tracking-tight whitespace-nowrap mt-1">
+          <div className="font-heading font-semibold text-3xl sm:text-[34px] xl:text-[38px] text-[#242033] tracking-tight whitespace-nowrap mt-1">
             {upcomingSession.remaining_hours} <span className="text-xl font-normal text-[#858098]">hr</span> {upcomingSession.remaining_mins} <span className="text-xl font-normal text-[#858098]">min</span>
           </div>
         </div>
@@ -177,18 +177,18 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
         {/* Assigned Counsellor Profile Pill */}
         <div 
           onClick={() => setSessionModalOpen(true)}
-          className="bg-white/90 rounded-2xl p-2.5 flex items-center space-x-3 border border-white shadow-xs cursor-pointer hover:bg-white transition-all"
+          className="bg-white/90 rounded-2xl p-2.5 sm:p-3 flex items-center space-x-3 border border-white shadow-xs cursor-pointer hover:bg-white transition-all"
         >
           <img
             src={upcomingSession.counsellor_avatar}
             alt={upcomingSession.counsellor_name}
-            className="w-10 h-10 rounded-xl object-cover"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover"
           />
           <div className="flex flex-col overflow-hidden">
-            <span className="text-xs font-semibold text-[#242033] truncate">
+            <span className="text-xs sm:text-sm font-semibold text-[#242033] truncate">
               {upcomingSession.counsellor_name}
             </span>
-            <span className="text-[10px] text-[#858098] truncate">
+            <span className="text-[10px] sm:text-xs text-[#858098] truncate">
               {upcomingSession.counsellor_title || 'Lead Clinical Psychologist'}
             </span>
           </div>
@@ -196,13 +196,13 @@ export const BottomSection: React.FC<BottomSectionProps> = ({
       </div>
 
       {/* CARD 3: Active Path this week (4 cols) */}
-      <div className="lg:col-span-4 bg-white/70 backdrop-blur-md rounded-3xl p-6 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
+      <div className="lg:col-span-4 bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-7 xl:p-8 border border-white/90 shadow-[0_12px_28px_rgba(117,70,245,0.06)] flex flex-col justify-between">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-heading font-medium text-xl text-[#242033] tracking-tight">
+          <h3 className="font-heading font-medium text-xl sm:text-2xl text-[#242033] tracking-tight">
             Active path <span className="text-sm font-normal text-[#858098]">this week</span>
           </h3>
 
-          <span className="font-heading font-semibold text-2xl text-[#242033]">
+          <span className="font-heading font-semibold text-2xl sm:text-3xl text-[#242033]">
             {activePath.overall_score}%
           </span>
         </div>

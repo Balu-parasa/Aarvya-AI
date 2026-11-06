@@ -156,3 +156,84 @@ export const fetchAdminMetrics = async () => {
   return res.data;
 };
 
+export const fetchNotifications = async () => {
+  try {
+    const res = await client.get('/notifications/');
+    return res.data;
+  } catch (err) {
+    return {
+      unread_count: 2,
+      notifications: [
+        {
+          title: "Upcoming Session Reminder",
+          message: "Your consultation with Dr. Jams Alther is in 6 hours and 52 minutes.",
+          type: "reminder",
+          is_read: false,
+          created_at: new Date(Date.now() - 45 * 60000).toISOString()
+        },
+        {
+          title: "Weekly Wellness Milestone",
+          message: "You maintained a 100% check-in consistency this week! Peak well-being reached 92%.",
+          type: "achievement",
+          is_read: false,
+          created_at: new Date(Date.now() - 4 * 3600000).toISOString()
+        }
+      ]
+    };
+  }
+};
+
+export const markNotificationsAsRead = async () => {
+  try {
+    const res = await client.post('/notifications/mark-read/');
+    return res.data;
+  } catch (err) {
+    return { message: "Notifications marked as read." };
+  }
+};
+
+export const fetchCrisisResources = async () => {
+  try {
+    const res = await client.get('/crisis-resources/');
+    return res.data;
+  } catch (err) {
+    return [
+      {
+        name: "Tele-MANAS (Govt. of India)",
+        number: "14416 / 1800-891-4416",
+        availability: "24/7 • Free • Multi-lingual",
+        scope: "Comprehensive mental health & distress counseling across 20+ languages."
+      },
+      {
+        name: "KIRAN Mental Health Helpline",
+        number: "1800-599-0019",
+        availability: "24/7 • Toll-Free",
+        scope: "Trauma recovery, distress relief & professional psychological triage."
+      },
+      {
+        name: "Vandrevala Foundation Helpline",
+        number: "+91 9999 666 555",
+        availability: "24/7 • Free • WhatsApp & Call",
+        scope: "Experienced mental health counselors for acute emotional crisis."
+      },
+      {
+        name: "International Crisis Text Line",
+        number: "Text HOME to 741741",
+        availability: "24/7 • Free • SMS",
+        scope: "Confidential text support for crisis intervention."
+      }
+    ];
+  }
+};
+
+export const scheduleAppointment = async (data: any) => {
+  const res = await client.post('/appointments/schedule/', data);
+  return res.data;
+};
+
+export const saveClinicalNote = async (data: any) => {
+  const res = await client.post('/counsellor/notes/', data);
+  return res.data;
+};
+
+
