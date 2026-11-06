@@ -1,9 +1,9 @@
-import React from 'react';
-import { LayoutDashboard, HeartHandshake, CalendarCheck2, TrendingUp, Settings, Bell } from 'lucide-react';
+import React, { useState } from 'react';
+import { LayoutDashboard, HeartHandshake, CalendarCheck2, TrendingUp, Settings, Bell, ChevronDown, Shield, Globe } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin';
-  setActiveTab: (tab: 'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin') => void;
+  activeTab: 'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin' | 'landing';
+  setActiveTab: (tab: 'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin' | 'landing') => void;
   onOpenCheckin: () => void;
   onOpenNotifications?: () => void;
   unreadNotificationsCount?: number;
@@ -22,8 +22,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   setUserRole,
   userName,
 }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   return (
-    <header className="w-full flex items-center justify-between py-4 px-2 sm:px-6">
+    <div className="w-full flex items-center justify-between py-2 px-2 sm:px-4">
       {/* Brand Identity */}
       <div 
         onClick={() => setActiveTab('dashboard')} 
@@ -43,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Floating Pill Center Navigation */}
-      <nav className="hidden md:flex items-center bg-[#F1ECFF]/70 backdrop-blur-md p-1.5 rounded-full border border-white/60 shadow-sm">
+      <nav className="hidden md:flex items-center bg-[#F1ECFF]/80 backdrop-blur-md p-1.5 rounded-full border border-white/70 shadow-sm">
         <button
           onClick={() => setActiveTab('dashboard')}
           className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
@@ -98,6 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Settings Button */}
         <button 
           title="Platform Settings"
+          onClick={() => alert("Platform Settings:\n• Encryption: Active (AES-256)\n• Informed Consent: Verified\n• Primary Database: MongoDB (PyMongo)\n• AI Engine: Baseline Deviation Analyzer")}
           className="w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-white/80 flex items-center justify-center text-[#242033] hover:text-[#7546F5] shadow-sm transition-all"
         >
           <Settings className="w-4 h-4" />
@@ -117,53 +120,126 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </button>
 
-        {/* User Profile & Role Selector */}
-        <div className="relative group">
-          <div className="flex items-center space-x-2 pl-2 cursor-pointer">
+        {/* Interactive Role & Dashboard Switcher Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="flex items-center space-x-2 pl-2 pr-3 py-1 rounded-full bg-white/80 hover:bg-white border border-white shadow-sm transition-all"
+          >
             <img
               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
               alt={userName}
-              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+              className="w-8 h-8 rounded-full object-cover"
             />
-          </div>
+            <div className="hidden sm:flex flex-col text-left">
+              <span className="text-xs font-semibold text-[#242033] leading-none">
+                {activeTab === 'counsellor' ? 'Dr. Jams' : activeTab === 'admin' ? 'Admin' : userName}
+              </span>
+              <span className="text-[10px] text-[#7546F5] font-medium capitalize">
+                {activeTab === 'counsellor' ? 'Psychiatrist' : activeTab === 'admin' ? 'System Admin' : 'Individual'}
+              </span>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-[#858098]" />
+          </button>
 
-          {/* Quick Role & Portal Switcher Dropdown */}
-          <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-[#DCD2FF] p-2 hidden group-hover:block group-focus-within:block z-50">
-            <div className="px-3 py-2 border-b border-[#F1ECFF]">
-              <p className="text-xs font-semibold text-[#242033]">{userName}</p>
-              <p className="text-[11px] text-[#858098] capitalize">Active Role: {userRole}</p>
+          {/* Dropdown Menu */}
+          {dropdownOpen && (
+            <div 
+              onMouseLeave={() => setDropdownOpen(false)}
+              className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-[#DCD2FF] p-2.5 z-50 animate-fadeIn"
+            >
+              <div className="px-3 py-2 border-b border-[#F1ECFF] mb-1">
+                <p className="text-xs font-bold text-[#242033]">Switch Dashboard View</p>
+                <p className="text-[11px] text-[#858098]">Select any role to view its dedicated portal</p>
+              </div>
+              
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    setUserRole('user');
+                    setActiveTab('dashboard');
+                    setDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between ${
+                    activeTab === 'dashboard' ? 'bg-[#F1ECFF] text-[#7546F5] font-semibold' : 'text-[#242033] hover:bg-[#F8F5FF]'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <span>👤</span>
+                    <span>1. Main User Dashboard</span>
+                  </span>
+                  {activeTab === 'dashboard' && <span className="text-[10px] bg-[#7546F5] text-white px-1.5 py-0.5 rounded">Active</span>}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setUserRole('counsellor');
+                    setActiveTab('counsellor');
+                    setDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between ${
+                    activeTab === 'counsellor' ? 'bg-[#F1ECFF] text-[#7546F5] font-semibold' : 'text-[#242033] hover:bg-[#F8F5FF]'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <span>🩺</span>
+                    <span>2. Psychiatrist Portal</span>
+                  </span>
+                  {activeTab === 'counsellor' && <span className="text-[10px] bg-[#7546F5] text-white px-1.5 py-0.5 rounded">Active</span>}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('progress');
+                    setDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between ${
+                    activeTab === 'progress' ? 'bg-[#F1ECFF] text-[#7546F5] font-semibold' : 'text-[#242033] hover:bg-[#F8F5FF]'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <span>📊</span>
+                    <span>3. Progress & Trends</span>
+                  </span>
+                  {activeTab === 'progress' && <span className="text-[10px] bg-[#7546F5] text-white px-1.5 py-0.5 rounded">Active</span>}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setUserRole('admin');
+                    setActiveTab('admin');
+                    setDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between ${
+                    activeTab === 'admin' ? 'bg-[#F1ECFF] text-[#7546F5] font-semibold' : 'text-[#242033] hover:bg-[#F8F5FF]'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <Shield className="w-3.5 h-3.5 text-[#7546F5]" />
+                    <span>4. Administrator Portal</span>
+                  </span>
+                  {activeTab === 'admin' && <span className="text-[10px] bg-[#7546F5] text-white px-1.5 py-0.5 rounded">Active</span>}
+                </button>
+
+                <div className="border-t border-[#F1ECFF] pt-1">
+                  <button
+                    onClick={() => {
+                      setActiveTab('landing');
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium flex items-center space-x-2 ${
+                      activeTab === 'landing' ? 'bg-[#F1ECFF] text-[#7546F5] font-semibold' : 'text-[#242033] hover:bg-[#F8F5FF]'
+                    }`}
+                  >
+                    <Globe className="w-3.5 h-3.5 text-[#858098]" />
+                    <span>5. Public Landing Page</span>
+                  </button>
+                </div>
+              </div>
             </div>
-            
-            <div className="py-1">
-              <button
-                onClick={() => { setUserRole('user'); setActiveTab('dashboard'); }}
-                className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium ${
-                  userRole === 'user' ? 'bg-[#F1ECFF] text-[#7546F5]' : 'text-[#242033] hover:bg-[#F8F5FF]'
-                }`}
-              >
-                👤 Victim / Individual View
-              </button>
-              <button
-                onClick={() => { setUserRole('counsellor'); setActiveTab('counsellor'); }}
-                className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium ${
-                  userRole === 'counsellor' ? 'bg-[#F1ECFF] text-[#7546F5]' : 'text-[#242033] hover:bg-[#F8F5FF]'
-                }`}
-              >
-                🩺 Counsellor Clinical Portal
-              </button>
-              <button
-                onClick={() => { setUserRole('admin'); setActiveTab('admin'); }}
-                className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium ${
-                  userRole === 'admin' ? 'bg-[#F1ECFF] text-[#7546F5]' : 'text-[#242033] hover:bg-[#F8F5FF]'
-                }`}
-              >
-                🛡️ System Administrator Portal
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
-    </header>
+    </div>
   );
 };
-
