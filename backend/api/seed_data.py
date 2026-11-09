@@ -90,6 +90,7 @@ def seed_initial_data():
         "name": "Administrator",
         "display_name": "Admin",
         "role": "admin",
+        "is_approved": True,
         "password": hash_password("admin123"),
         "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
         "created_at": datetime.utcnow().isoformat()

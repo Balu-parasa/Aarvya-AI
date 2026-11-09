@@ -64,10 +64,18 @@ def api_login(request):
 
     users_col = get_db_collection("users")
     user = users_col.find_one({"email": email})
+
+    # Also check counsellors collection if not found in users
+    if not user:
+        counsellors_col = get_db_collection("counsellors")
+        user = counsellors_col.find_one({"email": email})
     
     if not user or not verify_password(password, user.get("password", "")):
         return Response({"error": "Invalid email or password credentials."}, status=status.HTTP_401_UNAUTHORIZED)
     
+    # Reject login for admin users that are not yet approved
+    if user.get("role") == "admin" and not user.get("is_approved", False):
+        return Response({"error": "Admin request pending approval."}, status=status.HTTP_403_FORBIDDEN)
     token = create_jwt({
         "user_id": user["_id"],
         "email": user["email"],
@@ -105,16 +113,20 @@ def api_register(request):
 
     if not email or not password or not name:
         return Response({"error": "Name, email and password are required."}, status=status.HTTP_400_BAD_REQUEST)
-    
+
     users_col = get_db_collection("users")
     if users_col.find_one({"email": email}):
         return Response({"error": "An account with this email already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
+    is_approved = True
+    if role == "admin":
+        is_approved = False  # pending admin approval
     new_user = {
         "email": email,
         "name": name,
         "display_name": name.split()[0],
         "role": role if role in ["user", "counsellor", "admin"] else "user",
+        "is_approved": is_approved,
         "password": hash_password(password),
         "avatar": f"https://api.dicebear.com/7.x/avataaars/svg?seed={email}",
         "created_at": datetime.utcnow().isoformat(),
@@ -139,7 +151,8 @@ def api_register(request):
             "display_name": new_user["display_name"],
             "email": email,
             "role": new_user["role"],
-            "avatar": new_user["avatar"]
+            "avatar": new_user["avatar"],
+            "is_approved": is_approved
         }
     }, status=status.HTTP_201_CREATED)
 
@@ -556,3 +569,67 @@ def api_crisis_resources(request):
     ]
     return Response(resources)
 
+
+# ----------------- ADMIN APPROVAL ENDPOINTS -----------------
+
+@api_view(["GET"])
+def api_pending_admins(request):
+    """List all admin accounts pending approval."""
+    admin = get_authenticated_user(request)
+    if not admin or admin.get("role") != "admin" or not admin.get("is_approved"):
+        return Response({"error": "Admin access required."}, status=status.HTTP_403_FORBIDDEN)
+
+    users_col = get_db_collection("users")
+    pending = list(users_col.find({"role": "admin", "is_approved": False}))
+    return Response({"pending_admins": sanitize_doc(pending)})
+
+
+@api_view(["POST"])
+def api_approve_admin(request, user_id):
+    """Approve a pending admin account."""
+    admin = get_authenticated_user(request)
+    if not admin or admin.get("role") != "admin" or not admin.get("is_approved"):
+        return Response({"error": "Admin access required."}, status=status.HTTP_403_FORBIDDEN)
+
+    users_col = get_db_collection("users")
+    result = users_col.update_one(
+        {"_id": user_id, "role": "admin", "is_approved": False},
+        {"$set": {"is_approved": True}}
+    )
+    if result.modified_count == 0:
+        return Response({"error": "Admin request not found or already approved."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Audit log
+    audit_col = get_db_collection("audit_logs")
+    audit_col.insert_one({
+        "action": "ADMIN_APPROVED",
+        "actor": admin["email"],
+        "details": f"Approved admin access for user_id: {user_id}",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+    return Response({"message": "Admin access approved successfully."})
+
+
+@api_view(["POST"])
+def api_reject_admin(request, user_id):
+    """Reject and remove a pending admin request."""
+    admin = get_authenticated_user(request)
+    if not admin or admin.get("role") != "admin" or not admin.get("is_approved"):
+        return Response({"error": "Admin access required."}, status=status.HTTP_403_FORBIDDEN)
+
+    users_col = get_db_collection("users")
+    result = users_col.delete_one({"_id": user_id, "role": "admin", "is_approved": False})
+    if result.deleted_count == 0:
+        return Response({"error": "Admin request not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Audit log
+    audit_col = get_db_collection("audit_logs")
+    audit_col.insert_one({
+        "action": "ADMIN_REJECTED",
+        "actor": admin["email"],
+        "details": f"Rejected and removed admin request for user_id: {user_id}",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+    return Response({"message": "Admin request rejected and removed."})

@@ -17,4 +17,7 @@ urlpatterns = [
     path('notifications/mark-read/', views.api_mark_notifications_read, name='api_mark_notifications_read'),
     path('crisis-resources/', views.api_crisis_resources, name='api_crisis_resources'),
     path('admin/metrics/', views.api_admin_metrics, name='api_admin_metrics'),
+    path('admin/pending-admins/', views.api_pending_admins, name='api_pending_admins'),
+    path('admin/approve-admin/<str:user_id>/', views.api_approve_admin, name='api_approve_admin'),
+    path('admin/reject-admin/<str:user_id>/', views.api_reject_admin, name='api_reject_admin'),
 ]

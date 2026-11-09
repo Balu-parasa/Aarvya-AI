@@ -1,33 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
-import { BrainVisualization } from './components/BrainVisualization';
-import { HealthImprovementChart } from './components/HealthImprovementChart';
-import { BottomSection } from './components/BottomSection';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DailyCheckinModal } from './components/DailyCheckinModal';
-import { CounsellorPortal } from './components/CounsellorPortal';
-import { ProgressPage } from './components/ProgressPage';
-import { AdminPortal } from './components/AdminPortal';
-import { LandingPage } from './components/LandingPage';
 import { NotificationsDrawer } from './components/NotificationsDrawer';
-import { fetchDashboardOverview, fetchNotifications, markNotificationsAsRead } from './services/api';
-import type { DashboardOverview } from './types';
+import { fetchNotifications, markNotificationsAsRead } from './services/api';
+
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import UserDashboardPage from './pages/UserDashboardPage';
+import CounsellorDashboardPage from './pages/CounsellorDashboardPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import ProtectedRoute from './routes/ProtectedRoute';
+import AppNavbar from './components/AppNavbar';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'counsellor' | 'checkin' | 'progress' | 'admin' | 'landing'>('dashboard');
-  const [userRole, setUserRole] = useState<'user' | 'counsellor' | 'admin'>('user');
   const [checkinOpen, setCheckinOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [overview, setOverview] = useState<DashboardOverview | null>(null);
-
-  const loadOverview = async () => {
-    try {
-      const data = await fetchDashboardOverview();
-      setOverview(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<string>('user');
+  const [userName, setUserName] = useState<string>('');
 
   const loadNotifications = async () => {
     try {
@@ -45,108 +36,112 @@ export function App() {
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
   };
 
+  // Check if user is already logged in on mount
   useEffect(() => {
-    loadOverview();
-    loadNotifications();
+    const token = localStorage.getItem('aarvya_token');
+    const storedUser = localStorage.getItem('aarvya_user');
+    if (token && storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setIsLoggedIn(true);
+        setUserRole(user.role || 'user');
+        setUserName(user.display_name || user.name || '');
+        loadNotifications();
+      } catch {}
+    }
   }, []);
 
+  const handleLoginSuccess = (user: any) => {
+    setIsLoggedIn(true);
+    setUserRole(user.role || 'user');
+    setUserName(user.display_name || user.name || '');
+    loadNotifications();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('aarvya_token');
+    localStorage.removeItem('aarvya_user');
+    setIsLoggedIn(false);
+    setUserRole('user');
+    setUserName('');
+    setNotifications([]);
+  };
+
   return (
-    <div className="min-h-screen w-full bg-[#E9E2FF] flex flex-col font-sans antialiased text-[#242033] relative">
-      {/* Subtle Ambient Glows */}
-      <div className="fixed top-0 right-1/4 w-[500px] h-[500px] bg-[#DCD2FF]/35 rounded-full blur-3xl pointer-events-none -z-0" />
-      <div className="fixed bottom-10 left-10 w-[500px] h-[500px] bg-[#F8F5FF]/50 rounded-full blur-3xl pointer-events-none -z-0" />
+    <BrowserRouter>
+      <div className="min-h-screen w-full bg-[#E9E2FF] flex flex-col font-sans antialiased text-[#242033] relative">
+        {/* Ambient glows */}
+        <div className="fixed top-0 right-1/4 w-[500px] h-[500px] bg-[#DCD2FF]/35 rounded-full blur-3xl pointer-events-none -z-0" />
+        <div className="fixed bottom-10 left-10 w-[500px] h-[500px] bg-[#F8F5FF]/50 rounded-full blur-3xl pointer-events-none -z-0" />
 
-      {/* Top Header / Navigation with Fluid Full-Bleed Layout */}
-      <header className="w-full border-b border-white/50 bg-white/20 backdrop-blur-md sticky top-0 z-40 shadow-xs">
-        <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-3.5">
-          <Navbar
-            activeTab={activeTab === 'landing' ? 'dashboard' : activeTab}
-            setActiveTab={(tab) => {
-              if (tab === 'checkin') {
-                setCheckinOpen(true);
-              } else {
-                setActiveTab(tab);
-              }
-            }}
-            onOpenCheckin={() => setCheckinOpen(true)}
-            onOpenNotifications={() => setNotificationsOpen(true)}
-            unreadNotificationsCount={notifications.filter((n) => !n.is_read).length}
-            userRole={userRole}
-            setUserRole={(role) => {
-              setUserRole(role);
-              if (role === 'counsellor') setActiveTab('counsellor');
-              else if (role === 'admin') setActiveTab('admin');
-              else setActiveTab('dashboard');
-            }}
-            userName={overview?.greeting.name || 'Sara'}
-          />
-        </div>
-      </header>
-
-      {/* Main Web Page Content - Full Width Fluid Canvas without Left/Right Empty Gaps */}
-      <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-6 sm:py-8 lg:py-10 flex flex-col justify-between relative z-10">
-        {/* Router Views */}
-        {activeTab === 'landing' && (
-          <LandingPage onEnterApp={() => setActiveTab('dashboard')} />
-        )}
-
-        {activeTab === 'counsellor' && (
-          <CounsellorPortal onBackToDashboard={() => setActiveTab('dashboard')} />
-        )}
-
-        {activeTab === 'progress' && (
-          <ProgressPage
-            onBackToDashboard={() => setActiveTab('dashboard')}
-            onOpenCheckin={() => setCheckinOpen(true)}
-          />
-        )}
-
-        {activeTab === 'admin' && (
-          <AdminPortal onBackToDashboard={() => setActiveTab('dashboard')} />
-        )}
-
-        {activeTab === 'dashboard' && overview && (
-          <div className="flex-1 flex flex-col justify-between space-y-8 lg:space-y-10 animate-fadeIn">
-            {/* Hero Section: Left Brain & Floating Metrics + Right Health Chart */}
-            <div className="flex flex-col lg:flex-row items-stretch justify-between gap-6 lg:gap-8 xl:gap-10">
-              <BrainVisualization
-                userName={overview.greeting.name}
-                telemetry={overview.telemetry}
+        {/* Header — only show when logged in */}
+        {isLoggedIn && (
+          <header className="w-full border-b border-white/50 bg-white/20 backdrop-blur-md sticky top-0 z-40 shadow-xs">
+            <div className="w-full mx-auto px-6 py-3.5">
+              <AppNavbar
+                userRole={userRole}
+                userName={userName}
                 onOpenCheckin={() => setCheckinOpen(true)}
-              />
-
-              <HealthImprovementChart
-                title={overview.health_improvement.title}
-                subtitle={overview.health_improvement.subtitle}
-                data={overview.health_improvement.data}
+                onOpenNotifications={() => setNotificationsOpen(true)}
+                unreadNotificationsCount={notifications.filter((n) => !n.is_read).length}
+                onLogout={handleLogout}
               />
             </div>
-
-            {/* Bottom Section: Reports, Upcoming Session, Active Path */}
-            <BottomSection
-              reports={overview.reports}
-              upcomingSession={overview.upcoming_session}
-              activePath={overview.active_path}
-            />
-          </div>
+          </header>
         )}
-      </main>
 
-      {/* Daily Check-in Modal */}
-      <DailyCheckinModal
-        isOpen={checkinOpen}
-        onClose={() => setCheckinOpen(false)}
-        onSuccess={loadOverview}
-      />
+        {/* Main Content - Routes */}
+        <main className="flex-1 w-full relative z-10">
+          <Routes>
+            <Route path="/login" element={
+              isLoggedIn
+                ? <Navigate to={userRole === 'admin' ? '/admin' : userRole === 'counsellor' ? '/counsellor' : '/dashboard'} replace />
+                : <LoginPage onLoginSuccess={handleLoginSuccess} />
+            } />
+            <Route path="/register" element={
+              isLoggedIn
+                ? <Navigate to={userRole === 'admin' ? '/admin' : userRole === 'counsellor' ? '/counsellor' : '/dashboard'} replace />
+                : <RegisterPage />
+            } />
+            <Route
+              path="/dashboard/*"
+              element={
+                <ProtectedRoute allowedRoles={['user']}>
+                  <UserDashboardPage onOpenCheckin={() => setCheckinOpen(true)} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/counsellor/*"
+              element={
+                <ProtectedRoute allowedRoles={['counsellor']}>
+                  <CounsellorDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </main>
 
-      {/* Notifications Drawer */}
-      <NotificationsDrawer
-        isOpen={notificationsOpen}
-        onClose={() => setNotificationsOpen(false)}
-        notifications={notifications}
-        onMarkAllRead={handleMarkAllRead}
-      />
-    </div>
+        {/* Modals & Drawers */}
+        <DailyCheckinModal isOpen={checkinOpen} onClose={() => setCheckinOpen(false)} onSuccess={() => {}} />
+        <NotificationsDrawer
+          isOpen={notificationsOpen}
+          onClose={() => setNotificationsOpen(false)}
+          notifications={notifications}
+          onMarkAllRead={handleMarkAllRead}
+        />
+      </div>
+    </BrowserRouter>
   );
 }
 
