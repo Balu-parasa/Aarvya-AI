@@ -20,4 +20,7 @@ urlpatterns = [
     path('admin/pending-admins/', views.api_pending_admins, name='api_pending_admins'),
     path('admin/approve-admin/<str:user_id>/', views.api_approve_admin, name='api_approve_admin'),
     path('admin/reject-admin/<str:user_id>/', views.api_reject_admin, name='api_reject_admin'),
+    path('multichannel/chat/', views.api_multichannel_chat, name='api_multichannel_chat'),
+    path('multichannel/history/', views.api_interaction_history, name='api_interaction_history'),
+    path('surveillance/multi-level/', views.api_multi_level_dashboard, name='api_multi_level_dashboard'),
 ]

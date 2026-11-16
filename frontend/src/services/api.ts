@@ -252,3 +252,18 @@ export const rejectAdminRequest = async (userId: string) => {
   const res = await client.post(`/admin/reject-admin/${userId}/`);
   return res.data;
 };
+
+export const sendMultiChannelMessage = async (data: { message: string; channel: string; language?: string }) => {
+  const res = await client.post('/multichannel/chat/', data);
+  return res.data;
+};
+
+export const fetchInteractionHistory = async () => {
+  const res = await client.get('/multichannel/history/');
+  return res.data;
+};
+
+export const fetchMultiLevelAnalytics = async (level: string = 'national') => {
+  const res = await client.get(`/surveillance/multi-level/?level=${level}`);
+  return res.data;
+};

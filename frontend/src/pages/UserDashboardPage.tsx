@@ -5,6 +5,7 @@ import { HealthImprovementChart } from '../components/HealthImprovementChart';
 import { BottomSection } from '../components/BottomSection';
 import { ProgressPage } from '../components/ProgressPage';
 import { LegalWelfareHub } from '../components/LegalWelfareHub';
+import { MultiChannelAssistant } from '../components/MultiChannelAssistant';
 import { fetchDashboardOverview } from '../services/api';
 import type { DashboardOverview } from '../types';
 
@@ -55,6 +56,10 @@ const UserDashboardPage: React.FC<UserDashboardPageProps> = ({ onOpenCheckin }) 
       <Route
         path="welfare"
         element={<LegalWelfareHub />}
+      />
+      <Route
+        path="assistant"
+        element={<MultiChannelAssistant />}
       />
       <Route
         path="*"

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, HeartHandshake, CalendarCheck2, TrendingUp, Settings, 
-  Bell, ChevronDown, Shield, LogOut, Scale, ShieldAlert
+  Bell, ChevronDown, Shield, LogOut, Scale, ShieldAlert, Bot, Building2
 } from 'lucide-react';
 
 interface AppNavbarProps {
@@ -60,51 +60,63 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
         </div>
       </div>
 
-      {/* Center Navigation - HIGH-VALUE SIH26094 FEATURES */}
-      <nav className="hidden md:flex items-center bg-[#F1ECFF]/80 backdrop-blur-md p-1.5 rounded-full border border-white/70 shadow-sm">
+      {/* Center Navigation - FULL SIH26094 SUITE */}
+      <nav className="hidden lg:flex items-center bg-[#F1ECFF]/80 backdrop-blur-md p-1.5 rounded-full border border-white/70 shadow-sm">
         {userRole === 'user' && (
           <>
             <button
               onClick={() => navigate('/dashboard')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                 currentPath === '/dashboard'
-                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
                   : 'text-[#858098] hover:text-[#242033]'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" />
+              <LayoutDashboard className="w-3.5 h-3.5" />
               <span>Dashboard</span>
             </button>
 
             <button
-              onClick={onOpenCheckin}
-              className="flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all text-[#858098] hover:text-[#242033]"
+              onClick={() => navigate('/dashboard/assistant')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                currentPath.includes('/assistant')
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
+                  : 'text-[#858098] hover:text-[#242033]'
+              }`}
             >
-              <CalendarCheck2 className="w-4 h-4 text-[#7546F5]" />
+              <Bot className="w-3.5 h-3.5 text-[#7546F5]" />
+              <span>AI Chatbot / IVRS</span>
+            </button>
+
+            <button
+              onClick={onOpenCheckin}
+              className="flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all text-[#858098] hover:text-[#242033]"
+            >
+              <CalendarCheck2 className="w-3.5 h-3.5 text-[#7546F5]" />
               <span>Voluntary Check-in</span>
             </button>
 
             <button
               onClick={() => navigate('/dashboard/progress')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                 currentPath.includes('/progress')
-                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
                   : 'text-[#858098] hover:text-[#242033]'
               }`}
             >
-              <TrendingUp className="w-4 h-4" />
+              <TrendingUp className="w-3.5 h-3.5" />
               <span>Distress Trends</span>
             </button>
 
             <button
               onClick={() => navigate('/dashboard/welfare')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                 currentPath.includes('/welfare')
-                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
                   : 'text-[#858098] hover:text-[#242033]'
               }`}
             >
-              <Scale className="w-4 h-4" />
+              <Scale className="w-3.5 h-3.5" />
               <span>Legal Aid & Relief</span>
             </button>
           </>
@@ -114,22 +126,22 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
           <>
             <button
               onClick={() => navigate('/counsellor')}
-              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-semibold transition-all ${
                 currentPath.startsWith('/counsellor')
-                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
                   : 'text-[#858098] hover:text-[#242033]'
               }`}
             >
-              <HeartHandshake className="w-4 h-4" />
+              <HeartHandshake className="w-4 h-4 text-[#7546F5]" />
               <span>Clinical Case Console</span>
             </button>
 
             <a
               href="tel:14566"
-              className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-all"
+              className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-all"
             >
               <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
-              <span>NHAA 14566 Line</span>
+              <span>NHAA 14566 Helpline</span>
             </a>
           </>
         )}
@@ -138,14 +150,26 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
           <>
             <button
               onClick={() => navigate('/admin')}
-              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
-                currentPath.startsWith('/admin')
-                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                currentPath === '/admin'
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
                   : 'text-[#858098] hover:text-[#242033]'
               }`}
             >
-              <Shield className="w-4 h-4" />
-              <span>MoSJE Governance Console</span>
+              <Shield className="w-4 h-4 text-[#7546F5]" />
+              <span>Governance & Approvals</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/admin/surveillance')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+                currentPath.includes('/surveillance')
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-bold'
+                  : 'text-[#858098] hover:text-[#242033]'
+              }`}
+            >
+              <Building2 className="w-4 h-4 text-[#7546F5]" />
+              <span>National/State/District Surveillance</span>
             </button>
           </>
         )}
