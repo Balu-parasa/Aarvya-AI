@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, HeartHandshake, CalendarCheck2, TrendingUp, Settings, Bell, ChevronDown, Shield, LogOut } from 'lucide-react';
+import { 
+  LayoutDashboard, HeartHandshake, CalendarCheck2, TrendingUp, Settings, 
+  Bell, ChevronDown, Shield, LogOut, Scale, ShieldAlert
+} from 'lucide-react';
 
 interface AppNavbarProps {
   userRole: string;
@@ -25,7 +28,6 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
 
   const currentPath = location.pathname;
 
-  // Define authorized portal destination
   const getHomePath = () => {
     if (userRole === 'admin') return '/admin';
     if (userRole === 'counsellor') return '/counsellor';
@@ -35,7 +37,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
   const getRoleDisplayName = () => {
     if (userRole === 'admin') return 'System Administrator';
     if (userRole === 'counsellor') return 'Psychiatrist / Counsellor';
-    return 'Individual User';
+    return 'Victim / Complainant';
   };
 
   return (
@@ -58,13 +60,13 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
         </div>
       </div>
 
-      {/* Center Navigation - STRICTLY ROLE-BASED */}
+      {/* Center Navigation - HIGH-VALUE SIH26094 FEATURES */}
       <nav className="hidden md:flex items-center bg-[#F1ECFF]/80 backdrop-blur-md p-1.5 rounded-full border border-white/70 shadow-sm">
         {userRole === 'user' && (
           <>
             <button
               onClick={() => navigate('/dashboard')}
-              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 currentPath === '/dashboard'
                   ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
                   : 'text-[#858098] hover:text-[#242033]'
@@ -76,52 +78,76 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
 
             <button
               onClick={onOpenCheckin}
-              className="flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all text-[#858098] hover:text-[#242033]"
+              className="flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all text-[#858098] hover:text-[#242033]"
             >
-              <CalendarCheck2 className="w-4 h-4" />
-              <span>Daily Check-in</span>
+              <CalendarCheck2 className="w-4 h-4 text-[#7546F5]" />
+              <span>Voluntary Check-in</span>
             </button>
 
             <button
               onClick={() => navigate('/dashboard/progress')}
-              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 currentPath.includes('/progress')
                   ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
                   : 'text-[#858098] hover:text-[#242033]'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
-              <span>My Progress</span>
+              <span>Distress Trends</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/dashboard/welfare')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                currentPath.includes('/welfare')
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  : 'text-[#858098] hover:text-[#242033]'
+              }`}
+            >
+              <Scale className="w-4 h-4" />
+              <span>Legal Aid & Relief</span>
             </button>
           </>
         )}
 
         {userRole === 'counsellor' && (
-          <button
-            onClick={() => navigate('/counsellor')}
-            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
-              currentPath.startsWith('/counsellor')
-                ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
-                : 'text-[#858098] hover:text-[#242033]'
-            }`}
-          >
-            <HeartHandshake className="w-4 h-4" />
-            <span>Counsellor Clinical Console</span>
-          </button>
+          <>
+            <button
+              onClick={() => navigate('/counsellor')}
+              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                currentPath.startsWith('/counsellor')
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  : 'text-[#858098] hover:text-[#242033]'
+              }`}
+            >
+              <HeartHandshake className="w-4 h-4" />
+              <span>Clinical Case Console</span>
+            </button>
+
+            <a
+              href="tel:14566"
+              className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-all"
+            >
+              <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+              <span>NHAA 14566 Line</span>
+            </a>
+          </>
         )}
 
         {userRole === 'admin' && (
-          <button
-            onClick={() => navigate('/admin')}
-            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
-              currentPath.startsWith('/admin')
-                ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
-                : 'text-[#858098] hover:text-[#242033]'
-            }`}
-          >
-            <Shield className="w-4 h-4" />
-            <span>Administrator Console</span>
-          </button>
+          <>
+            <button
+              onClick={() => navigate('/admin')}
+              className={`flex items-center space-x-2 px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                currentPath.startsWith('/admin')
+                  ? 'bg-white text-[#242033] shadow-md shadow-[#7546F5]/10 font-semibold'
+                  : 'text-[#858098] hover:text-[#242033]'
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+              <span>MoSJE Governance Console</span>
+            </button>
+          </>
         )}
       </nav>
 
@@ -130,7 +156,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
         {/* Settings Button */}
         <button 
           title="Platform Security & Governance"
-          onClick={() => alert(`Aarvya AI Security Status:\n• Active Session: ${getRoleDisplayName()}\n• Data Isolation: Strict Role-Based\n• Encryption: AES-256\n• Primary Database: MongoDB via PyMongo`)}
+          onClick={() => alert(`Aarvya AI Platform Compliance:\n• SIH26094 (MoSJE) Atrocities Act 1989 Monitoring\n• Role: ${getRoleDisplayName()}\n• End-to-End Encryption: Active\n• Dynamic Distress Engine: Baseline Deviation Analyzer`)}
           className="w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-white/80 flex items-center justify-center text-[#242033] hover:text-[#7546F5] shadow-sm transition-all"
         >
           <Settings className="w-4 h-4" />
@@ -161,7 +187,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             </div>
             <div className="hidden sm:flex flex-col text-left">
               <span className="text-xs font-semibold text-[#242033] leading-none">
-                {userName || (userRole === 'counsellor' ? 'Dr. Jams' : userRole === 'admin' ? 'Administrator' : 'User')}
+                {userName || (userRole === 'counsellor' ? 'Dr. Jams' : userRole === 'admin' ? 'Administrator' : 'Sara')}
               </span>
               <span className="text-[10px] text-[#7546F5] font-medium capitalize">
                 {getRoleDisplayName()}
@@ -174,7 +200,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
           {dropdownOpen && (
             <div 
               onMouseLeave={() => setDropdownOpen(false)}
-              className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-[#DCD2FF] p-2.5 z-50 animate-fadeIn"
+              className="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-2xl border border-[#DCD2FF] p-2.5 z-50 animate-fadeIn"
             >
               <div className="px-3 py-2 border-b border-[#F1ECFF] mb-1">
                 <p className="text-xs font-bold text-[#242033] truncate">{userName || 'Active Account'}</p>
@@ -193,7 +219,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
                   className="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-[#242033] hover:bg-[#F8F5FF] flex items-center space-x-2"
                 >
                   <LayoutDashboard className="w-3.5 h-3.5 text-[#7546F5]" />
-                  <span>My Portal</span>
+                  <span>My Workspace</span>
                 </button>
 
                 <div className="border-t border-[#F1ECFF] pt-1">
