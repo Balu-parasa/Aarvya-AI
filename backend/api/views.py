@@ -314,6 +314,8 @@ def api_checkins(request):
     stress_level = int(data.get("stress_level", 5))
     sleep_hours = float(data.get("sleep_hours", 7.0))
     energy_level = int(data.get("energy_level", 5))
+    threat_level = int(data.get("threat_level", 1))
+    case_stage = str(data.get("case_stage", "investigation"))
     reflection = data.get("reflection", "")
     request_support = bool(data.get("request_support", False))
 
@@ -323,12 +325,15 @@ def api_checkins(request):
     # Retrieve recent history for AI baseline comparison
     past_records = list(checkins_col.find({"user_id": user_id}).sort("created_at", -1).limit(10))
 
-    # Run Explainable AI Distress Evaluation
+    # Run Explainable AI Distress Evaluation with SIH26094 threat & sentiment analysis
     ai_evaluation = DistressTrendAnalyzer.evaluate_trend({
         "mood": mood,
         "stress_level": stress_level,
         "sleep_hours": sleep_hours,
         "energy_level": energy_level,
+        "threat_level": threat_level,
+        "case_stage": case_stage,
+        "reflection": reflection,
         "request_support": request_support
     }, past_records)
 
@@ -340,7 +345,10 @@ def api_checkins(request):
         "stress_level": stress_level,
         "sleep_hours": sleep_hours,
         "energy_level": energy_level,
-        "composite_score": ai_evaluation["current_score"],
+        "threat_level": threat_level,
+        "case_stage": case_stage,
+        "composite_score": ai_evaluation["wellbeing_score"],
+        "dynamic_distress_score": ai_evaluation["dynamic_distress_score"],
         "reflection": reflection,
         "request_support": request_support,
         "ai_evaluation": ai_evaluation,
@@ -348,7 +356,7 @@ def api_checkins(request):
     }
     res = checkins_col.insert_one(checkin_doc)
 
-    # If AI flags elevated distress or explicit request, create alert for counsellor
+    # If AI flags elevated distress or explicit request, create alert for counsellor and district authority
     if ai_evaluation["requires_counsellor_review"]:
         alerts_col = get_db_collection("alerts")
         alerts_col.insert_one({
@@ -356,8 +364,11 @@ def api_checkins(request):
             "user_name": user.get("name", "Sara Jenkins") if user else "Sara Jenkins",
             "counsellor_id": user.get("assigned_counsellor_id", "counsellor_jams_001") if user else "counsellor_jams_001",
             "urgency": ai_evaluation["urgency"],
-            "title": "Counsellor Review Indicated" if not request_support else "Direct Support Requested",
+            "title": "Atrocity Distress Escalation Alert" if not request_support else "Emergency Support Requested",
             "reason": "; ".join(ai_evaluation["explainable_factors"]),
+            "recommended_interventions": ai_evaluation.get("recommended_interventions", []),
+            "case_stage": case_stage,
+            "threat_level": threat_level,
             "status": "pending_review",
             "created_at": now.isoformat()
         })
@@ -367,7 +378,7 @@ def api_checkins(request):
     audit_col.insert_one({
         "action": "CHECKIN_RECORDED",
         "actor": user_id,
-        "details": f"Score: {ai_evaluation['current_score']} | Review Flagged: {ai_evaluation['requires_counsellor_review']}",
+        "details": f"Well-being Score: {ai_evaluation['wellbeing_score']} | Dynamic Distress Score: {ai_evaluation['dynamic_distress_score']} | Review Flagged: {ai_evaluation['requires_counsellor_review']}",
         "timestamp": now.isoformat()
     })
 
