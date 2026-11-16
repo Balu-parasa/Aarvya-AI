@@ -237,3 +237,18 @@ export const saveClinicalNote = async (data: any) => {
 };
 
 
+
+export const fetchPendingAdmins = async () => {
+  const res = await client.get('/admin/pending-admins/');
+  return res.data;
+};
+
+export const approveAdminRequest = async (userId: string) => {
+  const res = await client.post(`/admin/approve-admin/${userId}/`);
+  return res.data;
+};
+
+export const rejectAdminRequest = async (userId: string) => {
+  const res = await client.post(`/admin/reject-admin/${userId}/`);
+  return res.data;
+};

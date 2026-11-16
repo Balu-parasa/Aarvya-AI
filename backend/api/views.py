@@ -41,8 +41,16 @@ def get_authenticated_user(request):
     payload = decode_jwt(token)
     if not payload:
         return None
+    user_id = payload.get("user_id")
     users_col = get_db_collection("users")
-    return users_col.find_one({"_id": payload.get("user_id")})
+    
+    # Try ObjectId query if valid, else string query
+    query = {"_id": ObjectId(user_id)} if ObjectId.is_valid(user_id) else {"_id": user_id}
+    user = users_col.find_one(query)
+    if not user:
+        counsellors_col = get_db_collection("counsellors")
+        user = counsellors_col.find_one(query)
+    return user
 
 @api_view(["GET"])
 def api_health(request):
@@ -592,8 +600,11 @@ def api_approve_admin(request, user_id):
         return Response({"error": "Admin access required."}, status=status.HTTP_403_FORBIDDEN)
 
     users_col = get_db_collection("users")
+    query = {"_id": ObjectId(user_id)} if ObjectId.is_valid(user_id) else {"_id": user_id}
+    query["role"] = "admin"
+    query["is_approved"] = False
     result = users_col.update_one(
-        {"_id": user_id, "role": "admin", "is_approved": False},
+        query,
         {"$set": {"is_approved": True}}
     )
     if result.modified_count == 0:
@@ -619,7 +630,10 @@ def api_reject_admin(request, user_id):
         return Response({"error": "Admin access required."}, status=status.HTTP_403_FORBIDDEN)
 
     users_col = get_db_collection("users")
-    result = users_col.delete_one({"_id": user_id, "role": "admin", "is_approved": False})
+    query = {"_id": ObjectId(user_id)} if ObjectId.is_valid(user_id) else {"_id": user_id}
+    query["role"] = "admin"
+    query["is_approved"] = False
+    result = users_col.delete_one(query)
     if result.deleted_count == 0:
         return Response({"error": "Admin request not found."}, status=status.HTTP_404_NOT_FOUND)
 
