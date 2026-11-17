@@ -85,7 +85,7 @@ def api_login(request):
     if user.get("role") == "admin" and not user.get("is_approved", False):
         return Response({"error": "Admin request pending approval."}, status=status.HTTP_403_FORBIDDEN)
     token = create_jwt({
-        "user_id": user["_id"],
+        "user_id": str(user["_id"]),
         "email": user["email"],
         "role": user.get("role", "user")
     })
@@ -102,7 +102,7 @@ def api_login(request):
     return Response({
         "token": token,
         "user": {
-            "id": user["_id"],
+            "id": str(user["_id"]),
             "name": user["name"],
             "display_name": user.get("display_name", user["name"].split()[0]),
             "email": user["email"],
