@@ -61,19 +61,7 @@ export const LegalWelfareHub: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-[#F1ECFF] p-4 rounded-2xl border border-[#DCD2FF] text-left shrink-0">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-[#7546F5] block">
-            National Helpline (NHAA)
-          </span>
-          <span className="text-2xl font-heading font-bold text-[#242033] block mt-0.5">
-            14566
-          </span>
-          <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1 mt-1">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            24/7 Active Voice Line
-          </span>
-        </div>
-      </div>
+       
 
       {/* Helplines Grid */}
       <div>
